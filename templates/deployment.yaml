@@ -191,7 +191,7 @@ spec:
               value: "true"
 {{- end }}
 {{- with .Values.extraEnvVars }}
-        {{- toYaml . | nindent 16 }}
+        {{- toYaml . | nindent 12 }}
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}
