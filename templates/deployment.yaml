@@ -125,7 +125,7 @@ spec:
                   key: azureContainer
 {{- else if eq .Values.storage "s3" }}
             {{- if or (and .Values.secrets.s3.secretKey .Values.secrets.s3.accessKey) .Values.secrets.s3.secretRef }}
-            - name: REGISTRY_STORAGE_S3_ACCESSKEY
+            - name: REGISTRY_STORAGE_S3_ACCESSKEY42
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.secrets.s3.secretRef }}{{ .Values.secrets.s3.secretRef }}{{ else }}{{ template "docker-registry.fullname" . }}-secret{{ end }}
@@ -134,7 +134,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.secrets.s3.secretRef }}{{ .Values.secrets.s3.secretRef }}{{ else }}{{ template "docker-registry.fullname" . }}-secret{{ end }}
-                  key: s3SecretKey42
+                  key: s3SecretKey
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
