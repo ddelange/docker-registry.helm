@@ -37,19 +37,11 @@ jobs:
           )
           helm template --debug ${OPTIONS[@]} --output-dir before ${{ github.server_url }}/${{ github.repository }}/archive/refs/heads/${{ github.base_ref }}.tar.gz
           helm template --debug ${OPTIONS[@]} --output-dir after .
-          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
-          echo 'HELM_DIFF<<EOF' >> $GITHUB_ENV
-          echo "$(diff -ur before after)" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-      - uses: marocchino/sticky-pull-request-comment@d2ad0de260ae8b0235ce059e63f2949ba9e05943
-        with:
-          message: |
-            Running a `helm template` smoketest on commit ${{ github.sha }} results in the following diff against `${{ github.base_ref }}`:
-            
-            <details><summary>diff</summary><p>
-            
-            ```diff
-            ${{ env.HELM_DIFF }}
-            ```
-            
-            </p></details>
+          # fork PRs get a read only token, so write to the job summary instead of commenting on the PR
+          {
+            echo "Running a \`helm template\` smoketest on commit ${{ github.event.pull_request.head.sha }} results in the following diff against \`${{ github.base_ref }}\`:"
+            echo
+            echo '```diff'
+            diff -ur before after || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
